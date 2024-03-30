@@ -18,6 +18,7 @@ router.get('/fetchAllNotes', fetchUser, async (req, res) => {
   }
 })
 
+
 router.post('/addNotes', fetchUser, [
   body('tittle', 'Enter Valid Tittle').isLength({ min: 3 }),
   body('description', 'Enter More Than 5 Letters').isLength({ min: 5 }),
@@ -39,6 +40,8 @@ router.post('/addNotes', fetchUser, [
   }
 
 })
+
+
 router.put('/updateNotes/:id', fetchUser, [
   body('tittle', 'Enter Valid Tittle').isLength({ min: 3 }),
   body('description', 'Enter More Than 5 Letters').isLength({ min: 5 }),
@@ -66,6 +69,8 @@ router.put('/updateNotes/:id', fetchUser, [
   }
 
 })
+
+
 router.delete('/DeleteNotes/:id', fetchUser, async (req, res) => {
 
   try {
