@@ -45,6 +45,7 @@ router.post('/addNotes', fetchUser, [
 router.put('/updateNotes/:id', fetchUser, [
   body('tittle', 'Enter Valid Tittle').isLength({ min: 3 }),
   body('description', 'Enter More Than 5 Letters').isLength({ min: 5 }),
+  body('tags')
 ], async (req, res) => {
   const { tittle, description, tags } = req.body
 
@@ -58,14 +59,14 @@ router.put('/updateNotes/:id', fetchUser, [
     const newNote = 
       { tittle, description, tags}
     if(note.user.toString() !== req.user.id){
-      return res.status(500).send("Error Occured")
+      return res.status(500).send("Error Occured,No user")
     }
     note = await schemaNotes.findByIdAndUpdate(req.params.id,{$set:newNote},{new:true})
     res.json(note)
     
   } catch (error) {
-    res.status(500).send("Error Occured")
-    console.error(error.message)
+    // console.error(error.message)
+    return res.status(500).send("Error Occured")
   }
 
 })

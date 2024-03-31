@@ -17,17 +17,18 @@ router.post('/createuser',
     body('password', 'Enter Vaid Password').isLength({ min: 5 })
   ], async (req, res) => {
     try {
+      let success = false
 
       console.log(req.body)
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
+        return res.status(400).json({success, errors: errors.array() })
       }
 
 
       const userEmail = await schemaUser.findOne({ email: req.body.email })
       if (userEmail) {
-        return res.status(400).json({ error: "Email already Exists" })
+        return res.status(400).json({success, error: "Email already Exists" })
       }
 
       const salt = await bcrypt.genSalt(10)
@@ -46,7 +47,8 @@ router.post('/createuser',
         }
       }
       const jwtToken = jwt.sign(data, SEC_PASS)
-      res.send({ jwtToken })
+      success=true
+      res.send({success, jwtToken })
     }
     catch (error) {
       res.status(500).send("Error Occured")
@@ -70,11 +72,11 @@ router.post('/login',
     body('email', 'Enter Valid Email').isEmail(),
     body('password', 'Enter Vaid Password').isLength({ min: 5 })
   ], async (req, res) => {
-
+    let success = false
     console.log(req.body)
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+      return res.status(400).json({success, errors: errors.array() })
     }
 
     const { email, password } = req.body
@@ -82,11 +84,11 @@ router.post('/login',
     try {
       const user = await schemaUser.findOne({ email })
       if (!user) {
-       return res.status(400).send({ error: "Enter Valid Details,Email" }) 
+       return res.status(400).send({success, error: "Enter Valid Details,Email" }) 
       }
       const verifyPassword =await bcrypt.compare(password, user.password)
       if (!verifyPassword) {
-       return res.status(400).send({ error: "Enter Valid Details,Password" })
+       return res.status(400).send({success, error: "Enter Valid Details,Password" })
       } 
       const data = {
         userId: {
@@ -94,7 +96,8 @@ router.post('/login',
         }
       }
       const jwtToken = jwt.sign(data, SEC_PASS)
-      res.send({ jwtToken })
+      success = true
+      res.send({success, jwtToken })
     } catch (error) {
       res.status(500).send("Error Occured")
       console.error(error.message)
