@@ -40,7 +40,7 @@ const Signup = () => {
 
   }
   return (
-    <div className='container mt-3'>
+    <div className='mt-30'>
       <form onSubmit={handleSignUp}>
         <div className="mb-3">
           <label htmlFor="name" className="form-label" >Name</label>

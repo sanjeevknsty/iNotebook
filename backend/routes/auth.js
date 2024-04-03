@@ -22,13 +22,13 @@ router.post('/createuser',
       console.log(req.body)
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        return res.status(400).json({success, errors: errors.array() })
+        return res.status(400).json({ success, errors: errors.array() })
       }
 
 
       const userEmail = await schemaUser.findOne({ email: req.body.email })
       if (userEmail) {
-        return res.status(400).json({success, error: "Email already Exists" })
+        return res.status(400).json({ success, error: "Email already Exists" })
       }
 
       const salt = await bcrypt.genSalt(10)
@@ -47,8 +47,8 @@ router.post('/createuser',
         }
       }
       const jwtToken = jwt.sign(data, SEC_PASS)
-      success=true
-      res.send({success, jwtToken })
+      success = true
+      res.send({ success, jwtToken })
     }
     catch (error) {
       res.status(500).send("Error Occured")
@@ -72,11 +72,12 @@ router.post('/login',
     body('email', 'Enter Valid Email').isEmail(),
     body('password', 'Enter Vaid Password').isLength({ min: 5 })
   ], async (req, res) => {
+
     let success = false
     console.log(req.body)
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(400).json({success, errors: errors.array() })
+      return res.status(400).json({ success, errors: errors.array() })
     }
 
     const { email, password } = req.body
@@ -84,12 +85,12 @@ router.post('/login',
     try {
       const user = await schemaUser.findOne({ email })
       if (!user) {
-       return res.status(400).send({success, error: "Enter Valid Details,Email" }) 
+        return res.status(400).send({ success, error: "Enter Valid Details,Email" })
       }
-      const verifyPassword =await bcrypt.compare(password, user.password)
+      const verifyPassword = await bcrypt.compare(password, user.password)
       if (!verifyPassword) {
-       return res.status(400).send({success, error: "Enter Valid Details,Password" })
-      } 
+        return res.status(400).send({ success, error: "Enter Valid Details,Password" })
+      }
       const data = {
         userId: {
           id: user.id
@@ -97,7 +98,7 @@ router.post('/login',
       }
       const jwtToken = jwt.sign(data, SEC_PASS)
       success = true
-      res.send({success, jwtToken })
+      res.send({ success, jwtToken })
     } catch (error) {
       res.status(500).send("Error Occured")
       console.error(error.message)
@@ -107,18 +108,18 @@ router.post('/login',
 
 
 
-router.post('/getUser',fetchUser, async (req, res) => {
+router.post('/getUser', fetchUser, async (req, res) => {
 
-    try {
-      userId = req.user.id
-      const user = await schemaUser.findById(userId).select('-password')
-      res.send(user)
-      
-    } catch (error) {
-      res.status(500).send("Error Occured auth")
-      console.error(error.message)
-    }
-     
-  })
+  try {
+    userId = req.user.id
+    const user = await schemaUser.findById(userId).select('-password')
+    res.send(user)
+
+  } catch (error) {
+    res.status(500).send("Error Occured auth")
+    console.error(error.message)
+  }
+
+})
 
 module.exports = router

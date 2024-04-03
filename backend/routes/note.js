@@ -3,7 +3,7 @@ const fetchUser = require('../middleware/fetchUser')
 // const jwt = require('jsonwebtoken')
 const { body, validationResult } = require('express-validator')
 const schemaNotes = require('../models/notes')
-const { default: userEvent } = require('@testing-library/user-event')
+// const { default: userEvent } = require('@testing-library/user-event')
 
 const router = express.Router()
 
@@ -30,8 +30,7 @@ router.post('/addNotes', fetchUser, [
     if (!errors.isEmpty()) {
       res.status(400).send({ errors: errors.array()})
     }
-    const note = new schemaNotes(
-      { tittle, description, tags, email, user: req.user.id })
+    const note = new schemaNotes({ tittle, description, tags, email, user: req.user.id })
     const result = await note.save()
     res.json(result)
   } catch (error) {
